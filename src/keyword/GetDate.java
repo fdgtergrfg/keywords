@@ -109,7 +109,7 @@ public class GetDate {
 				Class.forName("com.mysql.jdbc.Driver");// 鍔犺浇Mysql鏁版嵁椹卞姩
 
 				con = DriverManager.getConnection(
-						"jdbc:mysql://localhost:3306/ossean_show?useUnicode=true&amp;characterEncoding=utf-8", "root", "123456");// 鍒涘缓鏁版嵁杩炴帴
+						"jdbc:mysql://192.168.80.104:3306/extract_result?useUnicode=true&amp;characterEncoding=utf-8", "influx", "influx1234");// 鍒涘缓鏁版嵁杩炴帴
 
 			} catch (Exception e) {
 				System.out.println("连接错误" + e.getMessage());
