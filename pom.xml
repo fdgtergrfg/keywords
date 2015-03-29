@@ -20,7 +20,7 @@
 				<version>2.5.1</version>
 				<configuration>
 					<descriptors>
-						<descriptor>src/main/assembly/assembly.xml</descriptor>
+						<descriptor>src/assembly.xml</descriptor>
 					</descriptors>
 				</configuration>
 			</plugin>
