@@ -34,7 +34,7 @@ public class GetDate {
 		// Connection conn = getConnection(); // 鍚屾牱鍏堣鑾峰彇杩炴帴锛屽嵆杩炴帴鍒版暟鎹簱
 		ResultSet rs_memo = null;
 		try {
-			String sql = "select * from relative_memos where id in (" + memo_ids_str + ") ORDER BY id DESC limit 2, 500"; // 鏌ヨ鏁版嵁鐨剆ql璇彞
+			String sql = "select * from relative_memos where id in (" + memo_ids_str + ")"; // 鏌ヨ鏁版嵁鐨剆ql璇彞
 			Statement st = (Statement) conn.createStatement(); // 鍒涘缓鐢ㄤ簬鎵ц闈欐�乻ql璇彞鐨凷tatement瀵硅薄锛宻t灞炲眬閮ㄥ彉閲�
 
 			rs_memo = st.executeQuery(sql); // 鎵цsql鏌ヨ璇彞锛岃繑鍥炴煡璇㈡暟鎹殑缁撴灉闆�
@@ -46,6 +46,38 @@ public class GetDate {
 		return rs_memo;
 	}
 	
+	
+	public static ResultSet getMemoTags(String ids, Connection conn){
+		ResultSet rs = null;
+		String sql = "select name from tags where id in (?)";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, ids);
+			rs = ps.executeQuery();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return rs;
+	}
+	
+	
+	public static ResultSet getTagIds(String memo_ids_str, Connection conn){
+		ResultSet rs = null;
+		String sql = "select tag_id from taggings where taggable_id in (?) and taggable_type=?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, memo_ids_str);
+			ps.setString(2, "RelativeMemo");
+			rs = ps.executeQuery();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return rs;
+	}
 	
 	
 	public static ResultSet getProject(Connection conn, int startId, int batchSize) {

@@ -30,8 +30,8 @@ public class KeywordSort {
 	private static int keyword_count = 20;
 	private static int titleword_length = 2;
 	private static int word_length = 2;
-	private static int batchSize = 500;//一次处理项目数量
-	private static int startId = 1;//读取数据库中上次处理到的项目id
+	private static int batchSize = 500;// 一次处理项目数量
+	private static int startId = 1;// 读取数据库中上次处理到的项目id
 	private static String SourceTableName = "open_source_projects";
 	private static String TargetTableName = "hot_words";
 	private static Boolean insertResult = false;
@@ -41,8 +41,9 @@ public class KeywordSort {
 		Connection conn;
 		conn = (Connection) GetDate.getConnection();
 		conn.setAutoCommit(false);
-		while(true){
-			startId = GetDate.readPointer(conn, SourceTableName, TargetTableName);
+		while (true) {
+			startId = GetDate.readPointer(conn, SourceTableName,
+					TargetTableName);
 			ResultSet rs_project = GetDate.getProject(conn, startId, batchSize);
 			int project_id = 0;
 			String memo_ids_str = "";
@@ -55,55 +56,77 @@ public class KeywordSort {
 				while (rs.next()) {
 					memo_ids_str += rs.getString("relative_memo_id") + ",";
 				}
+				if (memo_ids_str.length() > 0)
+					memo_ids_str = memo_ids_str.substring(0,
+							memo_ids_str.length() - 1);
 				if (memo_ids_str.length() > 0) {
-					rs_memo = GetDate.getMemo(memo_ids_str.substring(0, memo_ids_str.length()-1), conn);
-					while (rs_memo.next()) {
-						title += rs_memo.getString("subject");
+					// rs_memo = GetDate.getMemo(memo_ids_str.substring(0,
+					// memo_ids_str.length()-1), conn);
+					ResultSet ids = GetDate.getTagIds(memo_ids_str, conn);
+					String tagIds = "";
+					while (ids.next()) {
+						tagIds += ids.getString("tag_id") + ",";
 					}
-				}else{
-					GetDate.updatePointer(conn, SourceTableName, TargetTableName, project_id+1);
+					if (ids != null)
+						ids.close();
+					if (tagIds.length() > 0)
+						tagIds = tagIds.substring(0, tagIds.length() - 1);
+					rs_memo = GetDate.getMemoTags(tagIds, conn);
+					while (rs_memo.next()) {
+						// title += rs_memo.getString("subject");
+						title += rs_memo.getString("name") + "|,|";
+					}
+					if (rs_memo != null)
+						rs_memo.close();
+					if (title.length() > 0)
+						title = title.substring(0, title.length() - 3);
+				} else {
+					GetDate.updatePointer(conn, SourceTableName,
+							TargetTableName, project_id + 1);
 					continue;
 				}
-				if(title.length() > 0){
+				if (title.length() > 0) {
 					out = getsubkeywordtitle(title);
 					System.out.println(out);
-					
-					//将热词存入数据库
-					//将out处理为两个List
-					String[] string = out.split(";");
+
+					// 将热词存入数据库
+					// 将out处理为两个List
+					String[] string = out.split("\\|;\\|");
 					List<String> nameList = new ArrayList<String>();
 					List<Float> weightList = new ArrayList<Float>();
-					for(String str:string){
-						String[] tmp = str.split(",");
+					for (String str : string) {
+						String[] tmp = str.split("\\|,\\|");
 						nameList.add(tmp[0]);
 						weightList.add(Float.parseFloat(tmp[1]));
 					}
-					insertResult = GetDate.insertHotWordsByBatch(conn, nameList, weightList, project_id);
-					if(insertResult){
-						//如果插入成功 修改pointers表中的指针
-						GetDate.updatePointer(conn, SourceTableName, TargetTableName, project_id+1);
+					insertResult = GetDate.insertHotWordsByBatch(conn,
+							nameList, weightList, project_id);
+					if (insertResult) {
+						// 如果插入成功 修改pointers表中的指针
+						GetDate.updatePointer(conn, SourceTableName,
+								TargetTableName, project_id + 1);
 					}
 					memo_ids_str = "";
 					title = "";
+				} else{
+					//没有标签
+					GetDate.updatePointer(conn, SourceTableName,
+							TargetTableName, project_id + 1);
 				}
-				
+
 				rs.close();
 				if (rs_memo != null) {
 					rs_memo.close();
 				}
-				
-				
-			}
-			
 
-			
-			
+			}
+
 			rs_project.close();
 
 			// String out = getsubkeyword("ĳ���ʻ������һƪ�����г��ֵĴ���Խ�࣬Խ���");
 			// System.out.println(out);
 		}
-		
+
 	}
 
 	/**
@@ -116,24 +139,22 @@ public class KeywordSort {
 		List<String> keys = null;
 		keys = new ArrayList();
 
-		try {
-			Reader r = null;
-			r = new StringReader(testString);
-			IKSegmenter ika = new IKSegmenter(r, true);
+		String[] strings = testString.split("\\|,\\|");
+		for (String str : strings)
+			keys.add(str);
 
-			Lexeme term = null;
-			while ((term = ika.next()) != null) {
-				if (term.getLexemeText().length() >= titleword_length
-						&& !term.equals("nbsp"))
-					keys.add(term.getLexemeText());
-				// System.out.print(term.getLexemeText() + "|");
-			}
-			
-			ika = null;
-			r.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		/*
+		 * try { Reader r = null; r = new StringReader(testString); IKSegmenter
+		 * ika = new IKSegmenter(r, true);
+		 * 
+		 * Lexeme term = null; while ((term = ika.next()) != null) { if
+		 * (term.getLexemeText().length() >= titleword_length &&
+		 * !term.equals("nbsp")) keys.add(term.getLexemeText()); //
+		 * System.out.print(term.getLexemeText() + "|"); }
+		 * 
+		 * ika = null; r.close(); } catch (IOException e) { e.printStackTrace();
+		 * }
+		 */
 
 		Map<String, Integer> keyMap = new HashMap<String, Integer>();
 		Integer $ = null;
@@ -163,11 +184,11 @@ public class KeywordSort {
 			cc = keyList.get(i).toString();
 			weight = keyList.get(i).getValue();
 
-			cc = cc.substring(0, cc.lastIndexOf("=")) + "," + weight + ";";
+			cc = cc.substring(0, cc.lastIndexOf("=")) + "|,|" + weight + "|;|";
 			testString = testString + cc;
 		}
-		if (testString.length() > 2) {
-			testString = testString.substring(0, testString.length() - 1);
+		if (testString.length() > 6) {
+			testString = testString.substring(0, testString.length() - 3);
 		}
 
 		keyList.clear();
