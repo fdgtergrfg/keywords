@@ -129,14 +129,13 @@ public class GetDate {
 	 * @param osp_id
 	 */
 	public static Boolean insertHotWordsByBatch(Connection conn, List<String> nameList, List<Float> weightList, int osp_id){
-		String sql = "insert into hot_words values (?,?,?,?,now(),now())";
+		String sql = "insert into hot_words(osp_id,name,weight,created_at,updated_at) values (?,?,?,now(),now())";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			for(int i = 0; i < nameList.size(); i++){
-				ps.setString(1, null);
-				ps.setInt(2, osp_id);
-				ps.setString(3, nameList.get(i));
-				ps.setFloat(4, weightList.get(i));
+				ps.setInt(1, osp_id);
+				ps.setString(2, nameList.get(i));
+				ps.setFloat(3, weightList.get(i));
 				ps.addBatch();
 			}
 			ps.executeBatch();
@@ -162,7 +161,7 @@ public class GetDate {
 			if(!rs.next()){
 				//没有指针 插入指向1的指针
 				Connection conn2 = getConnection();
-				String sql2 = "insert into pointers values (null,?,?,?)";
+				String sql2 = "insert into pointers(SourceTableName,TargetTableName,Pointer) values (?,?,?)";
 				PreparedStatement ps2 = conn2.prepareStatement(sql2);
 				ps2.setString(1, SourceTableName);
 				ps2.setString(2, TargetTableName);
