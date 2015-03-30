@@ -44,32 +44,27 @@ public class KeywordSort {
 		while (true) {
 			startId = GetDate.readPointer(conn, SourceTableName,
 					TargetTableName);
-			ResultSet rs_project = GetDate.getProject(conn, startId, batchSize);
+			List<Project> projects = GetDate.getProject(conn, startId, batchSize);
 			int project_id = 0;
 			String memo_ids_str = "";
-			String title = "";
+			String tags = "";
 			String out = "";
-			while (rs_project.next()) {
-				project_id = rs_project.getInt("id");
-				ResultSet rs = GetDate.getMemoIds(project_id, conn);
-				ResultSet rs_memo = null;
-				while (rs.next()) {
-					memo_ids_str += rs.getString("relative_memo_id") + ",";
+			for (Project project:projects) {
+				project_id = project.getId();
+				List<Integer> relativeMemoIds = GetDate.getMemoIds(project_id, conn);
+				for (Integer id:relativeMemoIds) {
+					memo_ids_str += id + ",";
 				}
-				if(rs != null)
-					rs.close();
 				if (memo_ids_str.length() > 0) {
 					memo_ids_str = memo_ids_str.substring(0,
 							memo_ids_str.length() - 1);
 					// rs_memo = GetDate.getMemo(memo_ids_str.substring(0,
 					// memo_ids_str.length()-1), conn);
-					ResultSet ids = GetDate.getTagIds(memo_ids_str, conn);
+					List<Integer> tagIdList = GetDate.getTagIds(memo_ids_str, conn);
 					String tagIds = "";
-					while (ids.next()) {
-						tagIds += ids.getString("tag_id") + ",";
+					for (Integer id:tagIdList) {
+						tagIds += id + ",";
 					}
-					if (ids != null)
-						ids.close();
 					if (tagIds.length() > 0)
 						tagIds = tagIds.substring(0, tagIds.length() - 1);
 					else{
@@ -78,22 +73,20 @@ public class KeywordSort {
 								TargetTableName, project_id + 1);
 						continue;
 					}
-					rs_memo = GetDate.getMemoTags(tagIds, conn);
-					while (rs_memo.next()) {
+					List<String> tagNames = GetDate.getMemoTags(tagIds, conn);
+					for (String tagName:tagNames) {
 						// title += rs_memo.getString("subject");
-						title += rs_memo.getString("name") + "|,|";
+						tags += tagName + "|,|";
 					}
-					if (rs_memo != null)
-						rs_memo.close();
-					if (title.length() > 3)
-						title = title.substring(0, title.length() - 3);
+					if (tags.length() >= 3)
+						tags = tags.substring(0, tags.length() - 3);
 				} else {
 					GetDate.updatePointer(conn, SourceTableName,
 							TargetTableName, project_id + 1);
 					continue;
 				}
-				if (title.length() > 0) {
-					out = getsubkeywordtitle(title);
+				if (tags.length() > 0) {
+					out = getsubkeywordtitle(tags);
 
 					// 将热词存入数据库
 					// 将out处理为两个List
@@ -113,15 +106,13 @@ public class KeywordSort {
 								TargetTableName, project_id + 1);
 					}
 					memo_ids_str = "";
-					title = "";
+					tags = "";
 				} else{
 					//没有标签
 					GetDate.updatePointer(conn, SourceTableName,
 							TargetTableName, project_id + 1);
 				}
 			}//while循环结尾
-
-			rs_project.close();
 
 		}
 
