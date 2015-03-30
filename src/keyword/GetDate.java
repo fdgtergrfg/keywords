@@ -90,6 +90,7 @@ public class GetDate {
 			PreparedStatement st = conn.prepareStatement(sql); // 鍒涘缓鐢ㄤ簬鎵ц闈欐�乻ql璇彞鐨凷tatement瀵硅薄锛宻t灞炲眬閮ㄥ彉閲�
 			st.setInt(1, startId);
 			rs_project = st.executeQuery(); // 鎵цsql鏌ヨ璇彞锛岃繑鍥炴煡璇㈡暟鎹殑缁撴灉闆�
+			st.close();
 			// conn.close(); // 鍏抽棴鏁版嵁搴撹繛鎺�
 		} catch (SQLException e) {
 			System.out.println("读取数据错误！project");
