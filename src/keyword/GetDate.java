@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.util.List;
 
 public class GetDate {
-	
 	private static Connection con = null;
 
 	public static ResultSet getMemoIds(int project_id,
@@ -21,6 +20,7 @@ public class GetDate {
 			Statement st = (Statement) conn.createStatement(); // 鍒涘缓鐢ㄤ簬鎵ц闈欐�乻ql璇彞鐨凷tatement瀵硅薄锛宻t灞炲眬閮ㄥ彉閲�
 
 			rs_memoIds = st.executeQuery(sql); // 鎵цsql鏌ヨ璇彞锛岃繑鍥炴煡璇㈡暟鎹殑缁撴灉闆�
+			st.close();
 			// conn.close(); // 鍏抽棴鏁版嵁搴撹繛鎺�
 		} catch (SQLException e) {
 			System.out.println("读取数据错误！memo ");
@@ -38,6 +38,7 @@ public class GetDate {
 			Statement st = (Statement) conn.createStatement(); // 鍒涘缓鐢ㄤ簬鎵ц闈欐�乻ql璇彞鐨凷tatement瀵硅薄锛宻t灞炲眬閮ㄥ彉閲�
 
 			rs_memo = st.executeQuery(sql); // 鎵цsql鏌ヨ璇彞锛岃繑鍥炴煡璇㈡暟鎹殑缁撴灉闆�
+			st.close();
 			// conn.close(); // 鍏抽棴鏁版嵁搴撹繛鎺�
 		} catch (SQLException e) {
 			System.out.println("读取数据错误！memo ");
@@ -54,6 +55,7 @@ public class GetDate {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, ids);
 			rs = ps.executeQuery();
+			ps.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,6 +73,7 @@ public class GetDate {
 			ps.setString(1, memo_ids_str);
 			ps.setString(2, "RelativeMemo");
 			rs = ps.executeQuery();
+			ps.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -109,7 +112,7 @@ public class GetDate {
 				Class.forName("com.mysql.jdbc.Driver");// 鍔犺浇Mysql鏁版嵁椹卞姩
 
 				con = DriverManager.getConnection(
-						"jdbc:mysql://192.168.80.111:3306/extract_result?useUnicode=true&amp;characterEncoding=utf-8", "influx", "influx1234");// 鍒涘缓鏁版嵁杩炴帴
+						"jdbc:mysql://192.168.80.104:3306/extract_result?useUnicode=true&amp;characterEncoding=utf-8", "influx", "influx1234");// 鍒涘缓鏁版嵁杩炴帴
 
 			} catch (Exception e) {
 				System.out.println("连接错误" + e.getMessage());

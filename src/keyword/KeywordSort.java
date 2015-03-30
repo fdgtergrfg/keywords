@@ -56,10 +56,11 @@ public class KeywordSort {
 				while (rs.next()) {
 					memo_ids_str += rs.getString("relative_memo_id") + ",";
 				}
-				if (memo_ids_str.length() > 0)
+				if(rs != null)
+					rs.close();
+				if (memo_ids_str.length() > 0) {
 					memo_ids_str = memo_ids_str.substring(0,
 							memo_ids_str.length() - 1);
-				if (memo_ids_str.length() > 0) {
 					// rs_memo = GetDate.getMemo(memo_ids_str.substring(0,
 					// memo_ids_str.length()-1), conn);
 					ResultSet ids = GetDate.getTagIds(memo_ids_str, conn);
@@ -71,6 +72,12 @@ public class KeywordSort {
 						ids.close();
 					if (tagIds.length() > 0)
 						tagIds = tagIds.substring(0, tagIds.length() - 1);
+					else{
+						//没有找到任何tag
+						GetDate.updatePointer(conn, SourceTableName,
+								TargetTableName, project_id + 1);
+						continue;
+					}
 					rs_memo = GetDate.getMemoTags(tagIds, conn);
 					while (rs_memo.next()) {
 						// title += rs_memo.getString("subject");
@@ -78,7 +85,7 @@ public class KeywordSort {
 					}
 					if (rs_memo != null)
 						rs_memo.close();
-					if (title.length() > 0)
+					if (title.length() > 3)
 						title = title.substring(0, title.length() - 3);
 				} else {
 					GetDate.updatePointer(conn, SourceTableName,
@@ -87,7 +94,6 @@ public class KeywordSort {
 				}
 				if (title.length() > 0) {
 					out = getsubkeywordtitle(title);
-					System.out.println(out);
 
 					// 将热词存入数据库
 					// 将out处理为两个List
@@ -113,18 +119,10 @@ public class KeywordSort {
 					GetDate.updatePointer(conn, SourceTableName,
 							TargetTableName, project_id + 1);
 				}
-
-				rs.close();
-				if (rs_memo != null) {
-					rs_memo.close();
-				}
-
-			}
+			}//while循环结尾
 
 			rs_project.close();
 
-			// String out = getsubkeyword("ĳ���ʻ������һƪ�����г��ֵĴ���Խ�࣬Խ���");
-			// System.out.println(out);
 		}
 
 	}
