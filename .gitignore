@@ -1,5 +1,2 @@
-./start
-./.settings
-./src/*.xml
-./src/*.txt
-./src/*.dic
+/target
+/.settings
