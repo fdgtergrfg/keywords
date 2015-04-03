@@ -166,7 +166,7 @@ public class GetDate {
 				Class.forName("com.mysql.jdbc.Driver");// 鍔犺浇Mysql鏁版嵁椹卞姩
 
 				con = DriverManager.getConnection(
-						"jdbc:mysql://localhost:3306/ossean_show?useUnicode=true&amp;characterEncoding=utf-8", "root", "123456");// 鍒涘缓鏁版嵁杩炴帴
+						"jdbc:mysql://192.168.80.104:3306/extract_result?useUnicode=true&amp;characterEncoding=utf-8", "influx", "influx1234");// 鍒涘缓鏁版嵁杩炴帴
 
 			} catch (Exception e) {
 				System.out.println("连接错误" + e.getMessage());
@@ -186,7 +186,7 @@ public class GetDate {
 				Class.forName("com.mysql.jdbc.Driver");// 鍔犺浇Mysql鏁版嵁椹卞姩
 
 				con = DriverManager.getConnection(
-						"jdbc:mysql://localhost:3306/hotwords_dest?useUnicode=true&amp;characterEncoding=utf-8", "root", "123456");// 鍒涘缓鏁版嵁杩炴帴
+						"jdbc:mysql://192.168.80.130:3306/ossean?useUnicode=true&amp;characterEncoding=utf-8", "trustie", "1234");// 鍒涘缓鏁版嵁杩炴帴
 
 			} catch (Exception e) {
 				System.out.println("连接错误" + e.getMessage());
@@ -208,7 +208,7 @@ public class GetDate {
 		String sql = "insert into hot_words(osp_id,name,weight,created_at,updated_at) values (?,?,?,now(),now())";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			Set<Integer> keyset = wordName.keySet();
+			Set<Integer> keyset = wordFrequency.keySet();
 			Iterator<Integer> it = keyset.iterator();
 			int num = 0;
 			while(it.hasNext() && num < 30){
