@@ -39,6 +39,16 @@ public class KeywordSort {
 			startId = GetDate.readPointer(conn, SourceTableName,
 					TargetTableName);
 			List<Project> projects = GetDate.getProject(conn, startId, batchSize);
+			if(projects.size() == 0){
+				System.out.println("no projects! Sleep 3600s");
+				try {
+					Thread.sleep(3600*1000L);
+					continue;
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			int project_id = 0;
 			for (Project project:projects) {
 				System.out.println("匹配项目:" + project.getName() + " id:" + project.getId());
