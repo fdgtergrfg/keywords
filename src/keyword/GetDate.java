@@ -186,7 +186,7 @@ public class GetDate {
 				Class.forName("com.mysql.jdbc.Driver");// 鍔犺浇Mysql鏁版嵁椹卞姩
 
 				con = DriverManager.getConnection(
-						"jdbc:mysql://192.168.80.130:3306/ossean?useUnicode=true&amp;characterEncoding=utf-8", "trustie", "1234");// 鍒涘缓鏁版嵁杩炴帴
+						"jdbc:mysql://192.168.80.130:3306/ossean_production?useUnicode=true&amp;characterEncoding=utf-8", "trustie", "1234");// 鍒涘缓鏁版嵁杩炴帴
 
 			} catch (Exception e) {
 				System.out.println("连接错误" + e.getMessage());
