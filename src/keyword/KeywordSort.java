@@ -40,6 +40,9 @@ public class KeywordSort {
 		while (true) {
 			startId = GetDate.readPointer(conn, SourceTableName,
 					TargetTableName);
+			if(startId == -1){
+				continue;//刚刚创建了表
+			}
 			List<Project> projects = GetDate.getProject(conn, startId, batchSize);
 			if(projects.size() == 0){
 				System.out.println("no projects! Sleep 3600s");

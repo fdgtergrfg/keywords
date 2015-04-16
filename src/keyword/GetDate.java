@@ -265,7 +265,6 @@ public class GetDate {
 				ps2.setString(1, SourceTableName);
 				ps2.setString(2, TargetTableName);
 				ps2.setString(3, "1");
-				System.out.println(ps2.toString());
 				ps2.execute();
 				conn.commit();
 				ps2.close();
@@ -276,7 +275,18 @@ public class GetDate {
 			ps.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("the pointer table doesn't exist");
+			String sqlBody = ReadSql.Read("./files/pointers.sql");
+			try {
+				PreparedStatement ps3 = conn.prepareStatement(sqlBody);
+				ps3.execute();
+				conn.commit();
+				ps3.close();
+				return -1;
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		}
 		return result;
 	}
