@@ -68,6 +68,10 @@ public class KeywordSort {
 					
 					
 					for(Integer tagId:tagIdList){
+						if(!GetDate.isTagExists(conn, tagId)){
+							//如果tag不存在 则不参与统计
+							continue;
+						}
 						if(wordFrequency.containsKey(tagId)){
 							wordFrequency.put(tagId, wordFrequency.get(tagId)+mtp.getMatch_weight());
 						}else{

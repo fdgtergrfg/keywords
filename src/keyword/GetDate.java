@@ -307,5 +307,25 @@ public class GetDate {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	public static Boolean isTagExists(Connection conn, int tagId){
+		Boolean result = false;
+		String sql = "select * from tags where id=?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, tagId);
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				result = true;
+			}
+			rs.close();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result;
+	}
 
 }
