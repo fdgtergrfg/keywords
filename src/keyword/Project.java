@@ -1,5 +1,8 @@
 package keyword;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Project {
 	
 	private int id;
@@ -16,10 +19,50 @@ public class Project {
 	private int view_num_local;
 	private String created_at;
 	private String updated_at;
-	private int ossean_score;
+	private int composite_score;
 	private int relative_memos_num;
 	private String created_time;
 	private String updated_time;
+	private int view_num;
+	private int activeness;
+	private String tags;
+	
+	
+	public List<String> getTagList(){
+		List<String> result = new ArrayList<String>();
+		String tmp = this.tags;
+		if(tmp != null && !"".equals(tmp)){
+			String[] strings = tmp.split(",");
+			for(String str:strings){
+				int index1 = str.indexOf("<");
+				int index2 = str.indexOf(">");
+				if(index2 > index1 && index1 >= 0){
+					//读取当前的标签
+					String tag = str.substring(index1 + 1, index2);
+					if(!"".equals(tag) )
+						result.add(tag);
+				}
+				
+			}
+		}
+		return result;
+	}
+	
+	
+	public String changeTagListToStr(List<String> tags){
+		String result = "";
+		for(String tag:tags){
+			result += "<"+tag+">,";
+		}
+		if(!"".equals(result)){
+			result = result.substring(0, result.length()-1);
+		}else{
+			result = null;
+		}
+		return result;
+	}
+	
+	
 	public int getId() {
 		return id;
 	}
@@ -104,12 +147,6 @@ public class Project {
 	public void setUpdated_at(String updated_at) {
 		this.updated_at = updated_at;
 	}
-	public int getOssean_score() {
-		return ossean_score;
-	}
-	public void setOssean_score(int ossean_score) {
-		this.ossean_score = ossean_score;
-	}
 	public int getRelative_memos_num() {
 		return relative_memos_num;
 	}
@@ -128,7 +165,28 @@ public class Project {
 	public void setUpdated_time(String updated_time) {
 		this.updated_time = updated_time;
 	}
-	
-	
-
+	public int getComposite_score() {
+		return composite_score;
+	}
+	public void setComposite_score(int composite_score) {
+		this.composite_score = composite_score;
+	}
+	public int getView_num() {
+		return view_num;
+	}
+	public void setView_num(int view_num) {
+		this.view_num = view_num;
+	}
+	public int getActiveness() {
+		return activeness;
+	}
+	public void setActiveness(int activeness) {
+		this.activeness = activeness;
+	}
+	public String getTags() {
+		return tags;
+	}
+	public void setTags(String tags) {
+		this.tags = tags;
+	}
 }

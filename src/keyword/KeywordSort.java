@@ -4,10 +4,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.mysql.jdbc.Connection;
 
@@ -78,6 +80,21 @@ public class KeywordSort {
 				Map<Integer,String> wordName = GetDate.getTagNames(wordFrequency, conn);
 				//存储wordFrequency和wordName
 				GetDate.insertHotWordsByBatch(conn2, wordName, wordFrequency, project_id);
+				
+				//存储热词到open_source_projects表中
+				List<String> tags = project.getTagList();
+				if(tags.size() < 10){
+					//小于10 添加5个
+					Set<Integer> keys = wordName.keySet();
+					Iterator<Integer> it = keys.iterator();
+					for(int i = 0; it.hasNext() && i < keys.size() && i<=5; i++){
+						int key = it.next();
+						tags.add(wordName.get(key));
+					}
+					
+					project.setTags(project.changeTagListToStr(tags));
+					GetDate.updateTagsOfOsp(conn2, project);
+				}
 				
 				// 如果插入成功 修改pointers表中的指针
 				GetDate.updatePointer(conn, SourceTableName,

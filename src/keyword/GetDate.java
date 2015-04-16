@@ -144,6 +144,7 @@ public class GetDate {
 				Project project = new Project();
 				project.setId(rs_project.getInt("id"));
 				project.setName(rs_project.getString("name"));
+				project.setTags(rs_project.getString("tags"));
 				projects.add(project);
 			}
 			rs_project.close();
@@ -166,7 +167,7 @@ public class GetDate {
 				Class.forName("com.mysql.jdbc.Driver");// 鍔犺浇Mysql鏁版嵁椹卞姩
 
 				con = DriverManager.getConnection(
-						"jdbc:mysql://192.168.80.104:3306/extract_result?useUnicode=true&amp;characterEncoding=utf-8", "influx", "influx1234");// 鍒涘缓鏁版嵁杩炴帴
+						"jdbc:mysql://192.168.80.130:3306/ossean_production?useUnicode=true&amp;characterEncoding=utf-8", "trustie", "1234");// 鍒涘缓鏁版嵁杩炴帴
 
 			} catch (Exception e) {
 				System.out.println("连接错误" + e.getMessage());
@@ -211,7 +212,7 @@ public class GetDate {
 			Set<Integer> keyset = wordFrequency.keySet();
 			Iterator<Integer> it = keyset.iterator();
 			int num = 0;
-			while(it.hasNext() && num < 30){
+			while(it.hasNext() && num < 20){
 				Integer tagId = it.next();
 				ps.setInt(1, osp_id);
 				ps.setString(2, wordName.get(tagId));
@@ -227,6 +228,23 @@ public class GetDate {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			return false;//事务回滚 插入失败
+		}
+	}
+	
+	
+	public static void updateTagsOfOsp(Connection conn, Project project){
+		String sql = "update open_source_projects set tags=? where id=?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, project.getTags());
+			ps.setInt(2, project.getId());
+			ps.executeUpdate();
+			conn.commit();
+			ps.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("更新OSP tags字段失败");
 		}
 	}
 	
