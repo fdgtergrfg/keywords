@@ -96,7 +96,18 @@ public class KeywordSort {
 					Iterator<Integer> it = keys.iterator();
 					for(int i = 0; it.hasNext() && i < keys.size() && i<=5; i++){
 						int key = it.next();
-						tags.add(wordName.get(key));
+						//判断该标签在tags中是否存在
+						boolean flag = false;
+						for(String tag:tags){
+							if(tag.equals(wordName.get(key))){
+								flag = true;
+								break;
+							}
+						}
+						if(flag == false){
+							tags.add(wordName.get(key));
+							System.out.println("add tag " + wordName.get(key) + " to project id: " + project.getId());
+						}
 					}
 					
 					project.setTags(project.changeTagListToStr(tags));

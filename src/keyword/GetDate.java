@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +37,8 @@ public class GetDate {
 			st.close();
 			// conn.close(); // 鍏抽棴鏁版嵁搴撹繛鎺�
 		} catch (SQLException e) {
-			System.out.println("读取数据错误！memo ");
+			System.out.println("读取数据错误！getMemoIds ");
+			System.out.println("出错时间: " + new Date().toString());
 			e.printStackTrace();
 		}
 		return results;
@@ -53,7 +55,8 @@ public class GetDate {
 			st.close();
 			// conn.close(); // 鍏抽棴鏁版嵁搴撹繛鎺�
 		} catch (SQLException e) {
-			System.out.println("读取数据错误！memo ");
+			System.out.println("读取数据错误！getMemo ");
+			System.out.println("出错时间: " + new Date().toString());
 			e.printStackTrace();
 		}
 		return rs_memo;
@@ -77,7 +80,8 @@ public class GetDate {
 				rs.close();
 				ps.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
+				System.out.println("读取标签出错：getTagNames");
+				System.out.println("出错时间: " + new Date().toString());
 				e.printStackTrace();
 			}
 			
@@ -101,7 +105,8 @@ public class GetDate {
 			rs.close();
 			ps.close();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			System.out.println("读取标签id出错：findTagIds");
+			System.out.println("出错时间: " + new Date().toString());
 			e.printStackTrace();
 		}
 		
@@ -152,6 +157,7 @@ public class GetDate {
 			// conn.close(); // 鍏抽棴鏁版嵁搴撹繛鎺�
 		} catch (SQLException e) {
 			System.out.println("读取数据错误！project");
+			System.out.println("出错时间: " + new Date().toString());
 			e.printStackTrace();
 		}
 		
@@ -171,6 +177,7 @@ public class GetDate {
 
 			} catch (Exception e) {
 				System.out.println("连接错误" + e.getMessage());
+				System.out.println("出错时间: " + new Date().toString());
 				e.printStackTrace();
 			}
 			return con; 
@@ -191,6 +198,7 @@ public class GetDate {
 
 			} catch (Exception e) {
 				System.out.println("连接错误" + e.getMessage());
+				System.out.println("出错时间: " + new Date().toString());
 				e.printStackTrace();
 			}
 			return con; 
@@ -227,12 +235,14 @@ public class GetDate {
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
+			System.out.println("出错时间: " + new Date().toString());
 			return false;//事务回滚 插入失败
 		}
 	}
 	
 	
 	public static void updateTagsOfOsp(Connection conn, Project project){
+		System.out.println("更新项目id: " + project.getId() + "对应的标签");
 		String sql = "update open_source_projects set tags=? where id=?";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -243,8 +253,9 @@ public class GetDate {
 			ps.close();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
 			System.out.println("更新OSP tags字段失败");
+			System.out.println("出错时间: " + new Date().toString());
+			e.printStackTrace();
 		}
 	}
 	
